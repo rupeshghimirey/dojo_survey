@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect, session, request
+from flask import Flask, render_template, redirect, request, flash
+from dojo import Dojo
 app = Flask(__name__)
-
-app.secret_key = "asdsadsd"
+app.secret_key = "asdsadssad"
 
 
 @app.route('/')
@@ -10,28 +10,34 @@ def home():
 
 
 @app.route("/add_form", methods = ['POST'])
-def submitForm():
-    print(request.form)
+def create_dojo():
 
-    survey = {
-        "full_name" : request.form['full_name'],
-        "dojo_location" : request.form['dojo_location'],
-        "dojo_language" : request.form['dojo_language'],
-        "comments" : request.form['comments']
+    if not Dojo.validate_dojo(request.form):
+        return redirect('/')
+    
+    
+    data = {
+        "name": request.form["name"],
+        "location" : request.form["dojo_location"],
+        "language" : request.form["dojo_language"],
+        "comments" : request.form["comments"],
+        
     }
-    session['survey'] = survey;
-    session['full_name'] = survey['full_name']
-    print(session)
+    Dojo.save(data)
+
+    flash("Form data submitted to database")
     return redirect('/result')
 
+
+
 @app.route('/result')
-def result():
-    fullName = session['survey']['full_name']
-    dojoLocation = session['survey']['dojo_location']
-    dojoLanguage = session['survey']['dojo_language']
-    comments = session['survey']['comments']
-    return render_template('result.html', fullName = fullName, dojoLocation = dojoLocation, 
-    dojoLanguage = dojoLanguage, comments = comments)
+def submitted_info():
+
+    list_of_all_dojos = Dojo.get_all_dojos()
+
+    return render_template("result.html", list_of_all_dojos = list_of_all_dojos)
+
+
 
 
 if __name__=="__main__":

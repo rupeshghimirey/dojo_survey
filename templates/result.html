@@ -13,14 +13,30 @@
 
 <body>
     <div class="result-box col-lg-4 offset-lg-3 mt-3 mb-3 ">
+        {% with messages = get_flashed_messages() %} 
+        {% if messages %}                            
+        {% for message in messages %}
+        <p class="text-success"> {{message}} </p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <h2>Submitted Info</h2>
-        <p>Name: <span>{{fullName}} </span> </p>
-        <p>Dojo Location: <span>{{dojoLocation}}</span></p>
-        <p>Favorite Langauge: <span>{{dojoLanguage}}</span> </p>
-        <p>Comments: <span>{{comments}}</span></p>
+        {%for dojo in list_of_all_dojos%}
+        <div>
+            <h3>***************************************</h3>
+            <span>{{dojo.id}}</span>
+            <p>Name: <span>{{dojo.name}} </span> </p>
+            <p>Dojo Location: <span>{{dojo.location}}</span></p>
+            <p>Favorite Langauge: <span>{{dojo.language}}</span> </p>
+            <p>Comments: <span>{{dojo.comments}}</span></p>
+        </div>
+        {%endfor%}
         <div class="go-back-button m-2">
             <a href="/" class="btn btn-primary mb-2 mt-2" role="button">Go Back</a>
         </div>
+
+    
+
         
 </body>
 
